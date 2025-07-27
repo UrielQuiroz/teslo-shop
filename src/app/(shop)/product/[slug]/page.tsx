@@ -1,3 +1,4 @@
+import { SizeSelector } from "@/components";
 import { titleFont } from "@/config/fonts";
 import { initialData } from "@/seed/seed";
 import { notFound } from "next/navigation";
@@ -31,6 +32,9 @@ export default function ({ params }: Props) {
         <p className="text-lg mb-5">{product.price}</p>
 
         {/* SELECTOR DE TALLAS */}
+        <SizeSelector
+          slectedSize={product.sizes[0]}
+          availableSizes={product.sizes}/>
 
         {/* SELECTOR DE CANTIDADA */}
 
