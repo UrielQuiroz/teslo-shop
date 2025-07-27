@@ -1,4 +1,4 @@
-import { SizeSelector } from "@/components";
+import { QuantitySelector, SizeSelector } from "@/components";
 import { titleFont } from "@/config/fonts";
 import { initialData } from "@/seed/seed";
 import { notFound } from "next/navigation";
@@ -37,6 +37,8 @@ export default function ({ params }: Props) {
           availableSizes={product.sizes}/>
 
         {/* SELECTOR DE CANTIDADA */}
+        <QuantitySelector
+          quantity={2}/>
 
         {/* BOTON */}
         <button className="btn-primary my-5">
