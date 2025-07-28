@@ -23,7 +23,7 @@ export const SlideShowProduct = ({ images, title, className }: Props) => {
     const [thumbsSwiper, setThumbsSwiper] = useState<SwuiperObject>(null);
 
     return (
-        <div>
+        <div className={ className }>
           <Swiper
               style={{
                   '--swiper-navigation-color': '#fff',
