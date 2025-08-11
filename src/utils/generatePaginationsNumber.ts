@@ -1,5 +1,5 @@
 
-export const generatePagination = ( currentPage: number, totalPages: number ) => {
+export const generatePaginationNumbers = ( currentPage: number, totalPages: number ) => {
 
     // Si el numero total de páginas es 7 o menos
     // vamos a mostrar todas las páginas sin puntos suspensivos
