@@ -11,14 +11,13 @@ const productsInCart = [
   initialData.products[2],
 ]
 
+
 interface Props {
-  params: {
-      id: string;
-  }
+  params: Promise<{ id: string }>
 }
 
-export default function ({ params }: Props) {
-  const { id } = params;
+export default async function OrdersByIdPage({ params }: Props) {
+  const { id } = await params;
 
   return (
     <div className="flex justify-center items-center mb-72 px-10 sm:px-0">

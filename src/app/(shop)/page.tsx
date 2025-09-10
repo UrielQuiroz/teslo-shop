@@ -5,15 +5,15 @@ import { getPaginatedProductsWithImages } from "@/actions";
 import { Pagination, ProductGrid, Title } from "@/components";
 import { redirect } from "next/navigation";
 
+
 interface Props {
-  searchParams: {
-    page?: string;
-  }
+  searchParams: Promise<{ page?: string }>
 }
 
 export default async function Home({ searchParams }: Props) {
+    const { page: pageParam } = await searchParams
 
-  const page = searchParams.page ? parseInt(searchParams.page) : 1;
+  const page = pageParam ? parseInt(pageParam) : 1;
 
   const { products, currentPage, totalPages } = await getPaginatedProductsWithImages({ page });
 

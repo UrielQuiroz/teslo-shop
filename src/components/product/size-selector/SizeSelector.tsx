@@ -3,7 +3,7 @@ import clsx from "clsx"
 
 interface Props {
     slectedSize: Size,
-    availableSizes: []
+    availableSizes: Size[]
 }
 
 export const SizeSelector = ({ slectedSize, availableSizes }: Props) => {
