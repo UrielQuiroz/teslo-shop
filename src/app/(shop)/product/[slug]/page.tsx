@@ -1,12 +1,36 @@
 export const revalidate = 604800;
+import { Metadata, ResolvingMetadata } from "next";
+import { notFound } from "next/navigation";
 
 import { getProductBySlug } from "@/actions";
 import { QuantitySelector, SizeSelector, SlideShowProduct, SlideShowProductMobile, StockLabel } from "@/components";
 import { titleFont } from "@/config/fonts";
-import { notFound } from "next/navigation";
+
 
 interface Props {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug
+ 
+  // fetch post information
+  const product = await getProductBySlug(slug)
+ 
+  return {
+    title: product?.title ?? 'Producto no encontrado',
+    description: product?.description ?? '',
+    openGraph: {
+      title: product?.title ?? 'Producto no encontrado',
+      description: product?.description ?? '',
+      images: [
+        `/products/${ product?.images[1] }`
+      ]
+    }
+  }
 }
 
 export default async function ProductBySlugPage({ params }: Props) {
