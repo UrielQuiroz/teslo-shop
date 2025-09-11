@@ -10,6 +10,7 @@ interface Props {
 
 export const StockLabel = ({ slug }: Props) => {
     const [stock, setStock] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         getStock();
@@ -18,12 +19,23 @@ export const StockLabel = ({ slug }: Props) => {
     const getStock = async () => {
         const in_stock = await getStockBySlug(slug)
         setStock(in_stock)
+        setIsLoading(false)
     }
 
   return (
-    <h1 className={`${titleFont.className} antialiased font-bold text-lg`}>
-        Stock: {stock}
-    </h1>
-  )
+    <>
+      {isLoading ? (
+        <h1
+          className={`${titleFont.className} antialiased font-bold text-lg bg-gray-200 animate-pulse`}
+        >
+          &nbsp;
+        </h1>
+      ) : (
+        <h1 className={`${titleFont.className} antialiased font-bold text-lg`}>
+          Stock: {stock}
+        </h1>
+      )}
+    </>
+  );
 }
 
