@@ -1,6 +1,8 @@
+export const revalidate = 604800;
+
+import { getProductBySlug } from "@/actions";
 import { QuantitySelector, SizeSelector, SlideShowProduct, SlideShowProductMobile } from "@/components";
 import { titleFont } from "@/config/fonts";
-import { initialData } from "@/seed/seed";
 import { notFound } from "next/navigation";
 
 interface Props {
@@ -10,7 +12,9 @@ interface Props {
 export default async function ProductBySlugPage({ params }: Props) {
   
   const { slug } = await params;
-  const product = initialData.products.find(product => product.slug === slug);
+  const product = await getProductBySlug(slug);
+
+  console.log(product)
 
   if(!product) {
     notFound();
