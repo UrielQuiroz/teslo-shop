@@ -3,8 +3,9 @@ import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getProductBySlug } from "@/actions";
-import { QuantitySelector, SizeSelector, SlideShowProduct, SlideShowProductMobile, StockLabel } from "@/components";
+import { SlideShowProduct, SlideShowProductMobile, StockLabel } from "@/components";
 import { titleFont } from "@/config/fonts";
+import { AddToCart } from "./ui/AddToCart";
 
 
 interface Props {
@@ -69,19 +70,7 @@ export default async function ProductBySlugPage({ params }: Props) {
 
         <p className="text-lg mb-5">{product.price}</p>
 
-        {/* SELECTOR DE TALLAS */}
-        <SizeSelector
-          slectedSize={product.sizes[0]}
-          availableSizes={product.sizes}/>
-
-        {/* SELECTOR DE CANTIDADA */}
-        <QuantitySelector
-          quantity={2}/>
-
-        {/* BOTON */}
-        <button className="btn-primary my-5">
-          Agregar al carrito
-        </button>
+        <AddToCart product={ product }/>
 
         {/* DESCRIPCION */}
         <h3 className="font-bold text-sm">Descripción</h3>
