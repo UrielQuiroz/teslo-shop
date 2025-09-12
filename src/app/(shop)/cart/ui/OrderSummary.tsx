@@ -4,6 +4,7 @@ import { useShallow } from "zustand/shallow";
 
 import { useCartStore } from "@/store";
 import { currencyFormat } from "@/utils";
+import { redirect } from "next/navigation";
 
 
 
@@ -16,6 +17,12 @@ export const OrderSummary = () => {
     useEffect(() => {
         setLoaded(true)
     }, [])
+
+    useEffect(() => {
+        if ( itemsInCart === 0 && loaded === true )   {
+            redirect("/empty")
+        }
+    },[ itemsInCart, loaded ])
 
     if( !loaded ) return <p>Loading...</p>
 
