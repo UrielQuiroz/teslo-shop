@@ -11,9 +11,19 @@ export async function authenticate(
         
         // await sleep(2)
 
-        await signIn('credentials', Object.fromEntries(formData));
+        await signIn('credentials', {
+            ...Object.fromEntries(formData),
+            redirect: false
+        });
+
+        return 'Success'
 
     } catch (error) {
-        return 'CredentialsSignin'
+
+        if((error as any).type === 'CredentialsSignin') {
+            return 'CredentialsSignin'
+        }
+
+        return 'UnknownError'
     }
 }
