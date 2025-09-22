@@ -2,19 +2,37 @@
 
 import { useAddressStore, useCartStore } from "@/store";
 import { currencyFormat } from "@/utils";
+import clsx from "clsx";
 import { useEffect, useState } from "react"
 import { useShallow } from "zustand/shallow";
 
 export const PlaceOrder = () => {
     const [loaded, setLoaded] = useState(false);
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
     const address = useAddressStore(state => state.address);
 
     const { subTotal, tax, total, itemsInCart } = useCartStore(useShallow((state) => state.getSummaryInformation()));
 
+    const cart = useCartStore(state => state.cart)
+
     useEffect(() => {
         setLoaded(true);
     }, [])
+
+    const onPlaceOrder = async () => {
+        setIsPlacingOrder(true);
+
+        const productsToOrder = cart.map(item => ({
+            productId: item.id,
+            quantity: item.quantity,
+            size: item.size
+        }))
+
+        console.log({address, productsToOrder})
+
+        setIsPlacingOrder(false);
+    }
 
     if( !loaded ) {
         return <p>Cargando...</p>
@@ -65,8 +83,16 @@ export const PlaceOrder = () => {
                     Al hacer clic en &quot;Colocar orden&quot;, aceptas nuestros <a href="#" className="underline">términos y condiciones</a> y <a href="#" className="underline">política de provacidad</a>
                     </span>
                 </p>
+
+                {/* <p className="text-red-500">Error de creación</p> */}
                 <button
-                    className="flex btn-primary justify-center" 
+                    onClick={onPlaceOrder}
+                    className={
+                        clsx({
+                            'btn-primary': !isPlacingOrder,
+                            'btn-disabled': isPlacingOrder
+                        })
+                    }
                     // href="/orders/123"
                     >
                     Colocar orden
