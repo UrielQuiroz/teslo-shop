@@ -1,7 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import clsx from "clsx";
-import type { Country } from "@/interfaces";
+import type { Address, Country } from "@/interfaces";
 import { useAddressStore } from "@/store";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
@@ -21,11 +21,17 @@ type FormInputs = {
 
 interface Props {
     countries: Country[];
+    useStoredAddress?: Partial<Address>
 }
 
-export const AddressForm = ( { countries }: Props) => {
+export const AddressForm = ( { countries, useStoredAddress = {} }: Props) => {
 
-    const { handleSubmit, register, formState: { isValid }, reset } = useForm<FormInputs>();
+    const { handleSubmit, register, formState: { isValid }, reset } = useForm<FormInputs>({
+      defaultValues: {
+        ...(useStoredAddress as any),
+        rememberAddress: false
+      }
+    });
 
     const { data: session } = useSession({
       required: true,
