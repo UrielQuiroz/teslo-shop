@@ -53,54 +53,99 @@ export const placeOrders = async (productIds: ProductToOrder[], address: Address
     }, { subtotal: 0, tax: 0, total: 0})
 
     // Crear la transaccion de base de datos
-    const prismaTx = await prisma.$transaction( async (tx) => {
+    try {
         
-        // 1. Actualizar el stock de los productos
+        const prismaTx = await prisma.$transaction( async (tx) => {
+        
+            // 1. Actualizar el stock de los productos
+            const updateProductsPrmises = products.map(async (product) => {
+                
+                // Acumular valores
+                const productQuantity = productIds.filter(
+                    p => p.productId === product.id
+                ).reduce( (acc, item) => item.quantity + acc, 0);
 
-        // 2. Crear la ordern - Encabezado - Detalles
-        const order = await tx.order.create({
-            data: {
-                userId: userId,
-                itemsInOrder: itemsInOrder,
-                subTotal: subtotal,
-                tax: tax,
-                total: total,
+                if(productQuantity === 0) {
+                    throw new Error(`${ product.id } no tiene cantidad definida`);
+                }
 
-                OrderItem: {
-                    createMany: {
-                        data: productIds.map( p => ({
-                            quantity: p.quantity,
-                            size: p.size,
-                            productId: p.productId,
-                            price: products.find( product => product.id === p.productId)?.price ?? 0
-                        }))
+                return tx.product.update({
+                    where: { id: product.id },
+                    data: {
+                        inStock: {
+                            decrement: productQuantity
+                        }
+                    }
+                })
+            })
+
+            const updateProducts = await Promise.all( updateProductsPrmises )
+
+            // Verificar valores negativos en las existencias = no hay stock
+            updateProducts.forEach( product => {
+                if(product.inStock < 0) {
+                    throw new Error(`${ product.title } no tiene inventario suficiente`);
+                }
+            })
+
+            // 2. Crear la ordern - Encabezado - Detalles
+            const order = await tx.order.create({
+                data: {
+                    userId: userId,
+                    itemsInOrder: itemsInOrder,
+                    subTotal: subtotal,
+                    tax: tax,
+                    total: total,
+
+                    OrderItem: {
+                        createMany: {
+                            data: productIds.map( p => ({
+                                quantity: p.quantity,
+                                size: p.size,
+                                productId: p.productId,
+                                price: products.find( product => product.id === p.productId)?.price ?? 0
+                            }))
+                        }
                     }
                 }
-            }
-        })
+            })
 
-        // 3. Crear la direccion de la orden
-        // Address
-        const { country, ...restAddress } = address;
-        const orderAddress = await tx.orderAddress.create({
-            data: {
-                firstName: restAddress.firstName,             
-                lastName: restAddress.lastName, 
-                address: restAddress.address,
-                address2: restAddress.address2,
-                postalCode: restAddress.postalCode,
-                city: restAddress.city,
-                phone: restAddress.phone,
-                
-                countryId: country,
-                orderId: order.id
+            // 3. Crear la direccion de la orden
+            // Address
+            const { country, ...restAddress } = address;
+            const orderAddress = await tx.orderAddress.create({
+                data: {
+                    firstName: restAddress.firstName,             
+                    lastName: restAddress.lastName, 
+                    address: restAddress.address,
+                    address2: restAddress.address2,
+                    postalCode: restAddress.postalCode,
+                    city: restAddress.city,
+                    phone: restAddress.phone,
+
+                    countryId: country,
+                    orderId: order.id
+                }
+            })
+
+            return {
+                orden: order,
+                updateProducts: updateProducts,
+                orderAddress: orderAddress
             }
         })
 
         return {
-            orden: order,
-            updateProducts: [],
-            orderAddress: orderAddress
+            ok: true,
+            order: prismaTx.orden,
+            prismaTx: prismaTx
         }
-    })
+        
+    } catch (error: any) {
+        return {
+            ok: false,
+            message: error.message
+        }
+    }
+
 }
