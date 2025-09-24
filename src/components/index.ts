@@ -14,4 +14,6 @@ export * from './ui/sidebar/Sidebar'
 export * from './ui/footer/Footer'
 export * from './ui/pagination/Pagination'
 
-export * from './provider/Provider'
+export * from './providers/Providers'
+
+export * from './paypal/PayPalButton'
