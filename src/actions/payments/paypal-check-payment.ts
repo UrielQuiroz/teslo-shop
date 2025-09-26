@@ -5,10 +5,7 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 export const paypalCheckPayment = async ( paypalTransactionId: string ) => {
-    console.log({ paypalTransactionId })
-
     const authToken = await getPayPalBearerToken();
-    console.log({ authToken })
 
     if( !authToken ) {
         return {
@@ -26,7 +23,6 @@ export const paypalCheckPayment = async ( paypalTransactionId: string ) => {
     }
 
     const { status, purchase_units} = resp;
-    console.log({status, purchase_units })
     const { invoice_id: order_id } = purchase_units[0];
 
     if( status !== 'COMPLETED') {
