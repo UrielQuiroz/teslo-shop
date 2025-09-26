@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation';
 import { IoCardOutline } from 'react-icons/io5';
 import { UsersTable } from './ui/UsersTable';
 
-export default async function OrdersPage() {
+export default async function UsersPage() {
 
   const { ok, users = [] } = await getPaginatedUsers();
 
