@@ -19,6 +19,8 @@ export * from './payments/paypal-check-payment'
 export * from './user/get-paginated-users'
 export * from './user/change-user-rol'
 
+export * from './category/get-categories'
+
 export * from './auth/login'
 export * from './auth/logout'
 export * from './auth/register'
