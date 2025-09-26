@@ -16,6 +16,8 @@ export * from './order/get-paginated-orders'
 export * from './payments/set-transaction-id'
 export * from './payments/paypal-check-payment'
 
+export * from './user/get-paginated-users'
+
 export * from './auth/login'
 export * from './auth/logout'
 export * from './auth/register'
