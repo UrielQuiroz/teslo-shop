@@ -57,9 +57,25 @@ export const createUpdateProduct = async ( formData: FormData ) => {
                 }
             })
 
-            console.log({ updateProduct: product })
         } else {
             // Crear
+            product = await prisma.product.create({
+                data: {
+                    ...rest,
+                    sizes: {
+                        set: rest.sizes as Size[]
+                    },
+                    tags: {
+                        set: tagsArray
+                    }
+                }
+            })
+        }
+
+        console.log({ product })
+
+        return {
+            product
         }
 
     })
