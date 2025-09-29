@@ -1,6 +1,6 @@
 "use client";
 
-import { createUpdateProduct } from "@/actions";
+import { createUpdateProduct, deleteProductImage } from "@/actions";
 import { Category, Product, ProductImage as ProductWithImage } from "@/interfaces";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
@@ -229,6 +229,7 @@ export const ProductForm = ({ product, categories }: Props) => {
                             className="rounded-t shadow-md"/>
                         <button
                             type="button" 
+                            onClick={() => deleteProductImage(image.id, image.url)}
                             className="btn-danger w-full rounded-b-xl">
                             Eliminar
                         </button>
