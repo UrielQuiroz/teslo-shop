@@ -17,7 +17,6 @@ export const deleteProductImage = async ( imageId: number, imageUrl: string ) =>
         .split('/')
         .pop()
         ?.split('.')[0] ?? '';
-    console.log(imageName)
 
     try {
         

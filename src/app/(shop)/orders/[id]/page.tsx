@@ -67,7 +67,7 @@ export default async function OrdersByIdPage({ params }: Props) {
                 <p>{address!.address2}</p>
                 <p>{address!.postalCode}</p>
                 <p>
-                    {address!.city}, {address!.country}
+                    {address!.city}, {address!.countryId}
                 </p>
                 <p>{address!.phone}</p>
             </div>
