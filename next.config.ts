@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // Ignora errores de ESLint durante build
   },
+  images: {
+    remotePatterns: [{
+      protocol: 'https',
+      hostname: 'res.cloudinary.com'
+    }],
+  },
 };
 
 export default nextConfig;
