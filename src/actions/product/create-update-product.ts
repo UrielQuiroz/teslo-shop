@@ -5,6 +5,9 @@ import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
+import {v2 as cloudinary} from 'cloudinary';
+cloudinary.config(process.env.CLOUDINARY_URL ?? '');
+
 const productSchema = z.object({
     id: z.string().uuid().optional().nullable(),
     title: z.string().min(3).max(255),
@@ -74,7 +77,11 @@ export const createUpdateProduct = async ( formData: FormData ) => {
                 })
             }
 
-            console.log({ product })
+            // Proceso de carga y guardado de imagenes
+            // Recorrer las imagenes y guardarlas
+            if( formData.getAll('images')) {
+                uploadImages(formData.getAll('images') as File[])
+            }
 
             return {
                 product
@@ -97,5 +104,35 @@ export const createUpdateProduct = async ( formData: FormData ) => {
             ok: false,
             message: 'Revisar los logs, no se pudo crear/actualizar'
         }
+    }
+}
+
+const uploadImages = async ( images: File[] ) => {
+    try {
+
+        const uploadPromises = images.map( async (image) => {
+
+            try {
+
+                const buffer = await image.arrayBuffer();
+                const base64Image = Buffer.from(buffer).toString('base64');
+
+                return cloudinary.uploader.upload(`data:image/png;base64,${ base64Image }`)
+                    .then( r => r.secure_url );
+
+            } catch (error) {
+                console.log(error)
+                return null;
+            }
+
+
+        })
+
+        const uploadImages = await Promise.all( uploadPromises );
+        return uploadImages;
+        
+    } catch (error) {
+        console.log(error);
+        return null;
     }
 }
